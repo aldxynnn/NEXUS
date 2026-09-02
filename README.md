@@ -65,3 +65,13 @@ Android App
                     │
                     ▼
               Ollama / Qwen3
+
+## Tampilan Aplikasi
+
+### AI Chat
+
+![NEXUS AI Chat](screenshots/ai-chat.png)
+
+### Focus
+
+![NEXUS Focus](screenshots/focus.png)
