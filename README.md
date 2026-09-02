@@ -66,6 +66,8 @@ Android App
                     ▼
               Ollama / Qwen3
 
+```
+
 ## Tampilan Aplikasi
 
 ### AI Chat
