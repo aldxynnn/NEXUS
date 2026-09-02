@@ -1,0 +1,22 @@
+# Android Studio / Gradle
+*.iml
+.gradle/
+/.idea/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+local.properties
+
+# Backend / Python
+backend/__pycache__/
+**/__pycache__/
+*.pyc
+
+# Secrets
+.env
+**/.env
+backend/.env
+
+# OS
+.DS_Store
