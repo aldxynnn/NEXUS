@@ -1,8 +1,21 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.inputStream().use { localProperties.load(it) }
+}
+
+val nexusBaseUrl = localProperties
+    .getProperty("NEXUS_BASE_URL", "http://10.0.2.2:8000/")
+    .let { if (it.endsWith("/")) it else "$it/" }
 
 android {
     namespace = "com.nexus.app"
@@ -21,6 +34,12 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField(
+            "String",
+            "NEXUS_BASE_URL",
+            "\"$nexusBaseUrl\""
+        )
     }
 
     buildTypes {
@@ -38,133 +57,40 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
 dependencies {
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.activity.compose)
 
-    // =========================================================
-    // COMPOSE
-    // =========================================================
+    implementation(libs.androidx.core.ktx)
 
-    implementation(
-        platform(
-            libs.androidx.compose.bom
-        )
-    )
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
 
-    implementation(
-        libs.androidx.compose.material3
-    )
+    implementation("androidx.navigation:navigation-compose:2.10.0")
 
-    implementation(
-        libs.androidx.compose.ui
-    )
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
-    implementation(
-        libs.androidx.compose.ui.graphics
-    )
+    testImplementation(libs.junit)
 
-    implementation(
-        libs.androidx.compose.ui.tooling.preview
-    )
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.junit)
 
-    implementation(
-        libs.androidx.activity.compose
-    )
-
-    // =========================================================
-    // ANDROID CORE
-    // =========================================================
-
-    implementation(
-        libs.androidx.core.ktx
-    )
-
-    // =========================================================
-    // LIFECYCLE / VIEWMODEL
-    // =========================================================
-
-    implementation(
-        libs.androidx.lifecycle.runtime.ktx
-    )
-
-    implementation(
-        "androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0"
-    )
-
-    // =========================================================
-    // NAVIGATION
-    // =========================================================
-
-    implementation(
-        "androidx.navigation:navigation-compose:2.10.0"
-    )
-
-    // =========================================================
-    // ROOM DATABASE
-    // =========================================================
-
-    implementation(
-        libs.androidx.room.runtime
-    )
-
-    implementation(
-        libs.androidx.room.ktx
-    )
-
-    ksp(
-        libs.androidx.room.compiler
-    )
-
-    // =========================================================
-    // UNIT TEST
-    // =========================================================
-
-    testImplementation(
-        libs.junit
-    )
-
-    // =========================================================
-    // ANDROID TEST
-    // =========================================================
-
-    androidTestImplementation(
-        platform(
-            libs.androidx.compose.bom
-        )
-    )
-
-    androidTestImplementation(
-        libs.androidx.compose.ui.test.junit4
-    )
-
-    androidTestImplementation(
-        libs.androidx.espresso.core
-    )
-
-    androidTestImplementation(
-        libs.androidx.junit
-    )
-
-    // =========================================================
-    // DEBUG
-    // =========================================================
-
-    debugImplementation(
-        libs.androidx.compose.ui.test.manifest
-    )
-
-    debugImplementation(
-        libs.androidx.compose.ui.tooling
-    )
-
-    // =========================================================
-// NETWORK / API
-// =========================================================
+    debugImplementation(libs.androidx.compose.ui.test.manifest)
+    debugImplementation(libs.androidx.compose.ui.tooling)
 
     implementation("com.squareup.retrofit2:retrofit:3.0.0")
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
     implementation("com.squareup.okhttp3:logging-interceptor:5.1.0")
-
 }
