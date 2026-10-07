@@ -1,5 +1,6 @@
 package com.nexus.app.data.remote
 
+import com.nexus.app.BuildConfig
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -7,7 +8,7 @@ import java.util.concurrent.TimeUnit
 
 object ApiClient {
 
-    private const val BASE_URL = "http://192.168.0.101:8000/"
+    private val baseUrl = BuildConfig.NEXUS_BASE_URL
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(30, TimeUnit.SECONDS)
@@ -18,7 +19,7 @@ object ApiClient {
     val api: ApiService by lazy {
 
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
