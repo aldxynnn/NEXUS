@@ -162,7 +162,7 @@ The app uses this default API URL for the **Android Emulator**:
 http://10.0.2.2:8000/
 ```
 
-No extra configuration is required for the standard Android Emulator.
+On Android 17+ the app also requests **local network access** at launch because the local backend uses the emulator-to-host address `10.0.2.2`. Grant the permission when Android asks.
 
 For a physical Android device, create or edit the root `local.properties` file (this file is ignored by Git) and add your computer's LAN IP:
 
@@ -273,10 +273,18 @@ For the standard Android Emulator, the API URL should be:
 http://10.0.2.2:8000/
 ```
 
+On Android 17+, make sure the app has been granted local network access.
+
 Make sure the backend is started with:
 
 ```bash
 python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+You can verify the emulator-to-host connection in the emulator browser:
+
+```text
+http://10.0.2.2:8000/health
 ```
 
 For a physical device, use `NEXUS_BASE_URL` in `local.properties` and ensure the device can reach the computer on port 8000.
