@@ -1,9 +1,14 @@
 package com.nexus.app
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.WindowCompat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -15,6 +20,19 @@ import com.nexus.app.ui.navigation.NexusNavigation
 import com.nexus.app.ui.theme.NexusTheme
 
 class MainActivity : ComponentActivity() {
+
+    private val localNetworkPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            if (!granted) {
+                Toast.makeText(
+                    this,
+                    "NEXUS needs local network access to connect to the backend.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +61,19 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
+        }
+
+        requestLocalNetworkPermission()
+    }
+
+    private fun requestLocalNetworkPermission() {
+        if (Build.VERSION.SDK_INT >= 37 &&
+            checkSelfPermission(Manifest.permission.ACCESS_LOCAL_NETWORK) !=
+            PackageManager.PERMISSION_GRANTED
+        ) {
+            localNetworkPermissionLauncher.launch(
+                Manifest.permission.ACCESS_LOCAL_NETWORK
+            )
         }
     }
 }
